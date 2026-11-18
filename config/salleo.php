@@ -6,5 +6,5 @@ return [
 
     // Plage horaire d'ouverture (utilisée pour les statistiques)
     'heure_ouverture' => '08:00',
-    'heure_fermeture' => '18:00',
+    'heure_fermeture' => '19:00',
 ];

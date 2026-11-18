@@ -20,7 +20,7 @@ class EnsureUserHasRole
             abort(403, 'Accès non autorisé.');
         }
  
-        return $next($request);
+            return $next($request);
     }
 
 }
