@@ -10,7 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Salle extends Model
 {
     public const EQUIPEMENTS = [
-        'vidéoprojecteur', 'climatisation', 'tableau', 'prises', 'wifi',
+        'Vidéoprojecteur', 'Tableau blanc', 'Climatisation', 'Postes informatiques',
+        'Système audio', 'Écran interactif', 'Prises électriques', 'Wi-Fi',
     ];
 
     protected $fillable = [
@@ -26,6 +27,8 @@ class Salle extends Model
             'validation_requise' => 'boolean',
         ];
     }
+
+
 
     public function reservations(): HasMany
     {

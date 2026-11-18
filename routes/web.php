@@ -6,7 +6,9 @@
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\Route;
     use App\Http\Controllers\Admin\DashboardController;
- 
+    use App\Http\Controllers\Admin\SalleController;
+    
+
     Route::view('/', 'welcome');
 
     // Redirige vers l'espace correspondant au rôle après la connexion
@@ -30,6 +32,7 @@
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
     });
+    
 
     // ----- Espace responsable de classe -----
     Route::middleware(['auth', 'role:responsable'])
@@ -69,5 +72,6 @@
             [Admin\StatistiqueController::class, 'index'])
             ->name('statistiques');
     });
+    Route::resource('salles', SalleController::class)->except(['show']);
 
     require __DIR__.'/auth.php';
