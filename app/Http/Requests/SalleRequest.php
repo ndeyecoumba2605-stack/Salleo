@@ -1,29 +1,33 @@
 <?php
-
+ 
 namespace App\Http\Requests;
-
-use Illuminate\Contracts\Validation\ValidationRule;
+ 
+use App\Models\Salle;
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Validation\Rule;
+ 
 class SalleRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true; // l'accès est déjà protégé par le middleware role:admin
     }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
+ 
     public function rules(): array
     {
+        $id = $this->route('salle')?->id;
+ 
         return [
-            //
+            'batiment' => ['required', 'string', 'max:50'],
+            'numero' => [
+                'required', 'string', 'max:20',
+                Rule::unique('salles', 'numero')
+                    ->where('batiment', $this->input('batiment'))
+                    ->ignore($id),
+            ],
+            'capacite' => ['required', 'integer', 'min:1', 'max:500'],
+            'equipements' => ['nullable', 'array'],
+            'equipements.*' => ['string', Rule::in(Salle::EQUIPEMENTS)],
         ];
     }
 }

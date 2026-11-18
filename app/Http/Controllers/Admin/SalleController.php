@@ -1,65 +1,65 @@
 <?php
-
+ 
 namespace App\Http\Controllers\Admin;
-
+ 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
+use App\Http\Requests\SalleRequest;
+use App\Models\Salle;
+ 
 class SalleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $salles = Salle::orderBy('batiment')->orderBy('numero')->paginate(15);
+ 
+        return view('admin.salles.index', compact('salles'));
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
+ 
     public function create()
     {
-        //
+        return view('admin.salles.create');
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+ 
+    public function store(SalleRequest $request)
     {
-        //
+        Salle::create($this->donnees($request));
+ 
+        return redirect()->route('admin.salles.index')
+            ->with('status', 'Salle ajoutée.');
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+ 
+    public function edit(Salle $salle)
     {
-        //
+        return view('admin.salles.edit', compact('salle'));
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+ 
+    public function update(SalleRequest $request, Salle $salle)
     {
-        //
+        $salle->update($this->donnees($request));
+ 
+        return redirect()->route('admin.salles.index')
+            ->with('status', 'Salle mise à jour.');
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+ 
+    public function destroy(Salle $salle)
     {
-        //
+        if ($salle->reservations()->exists()) {
+            return back()->with('error',
+                'Cette salle a un historique de réservations : désactivez-la.');
+        }
+ 
+        $salle->delete();
+ 
+        return back()->with('status', 'Salle supprimée.');
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+ 
+    private function donnees(SalleRequest $request): array
     {
-        //
+        return [
+            ...$request->validated(),
+            'equipements' => $request->input('equipements', []),
+            'active' => $request->boolean('active'),
+            'validation_requise' => $request->boolean('validation_requise'),
+        ];
     }
 }

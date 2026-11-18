@@ -5,6 +5,7 @@
     use App\Http\Controllers\Responsable;
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\Route;
+    use App\Http\Controllers\Admin\DashboardController;
  
     Route::view('/', 'welcome');
 
@@ -16,7 +17,10 @@
         return $user->isAdmin()
             ? redirect()->route('admin.dashboard')
             : redirect()->route('responsable.recherche');
-})->middleware('auth')->name('dashboard');
+    })->middleware('auth')->name('dashboard');
+    Route::middleware(['auth', 'role:administrateur'])->prefix('admin')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+    });
 
     Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])
