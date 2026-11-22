@@ -69,5 +69,18 @@ class ReservationService
     
         // (Phase 11) notification d'annulation ici
     }
-    // (Phases 9 et 10) annuler(), confirmer() et refuser() seront ajoutées ici
+     public function confirmer(Reservation $reservation): void
+    {
+        $reservation->update(['statut' => Reservation::CONFIRMEE]);
+    
+        // (Phase 11) notification de confirmation ici
+    }
+    
+    public function refuser(Reservation $reservation): void
+    {
+        $reservation->update(['statut' => Reservation::REFUSEE]);
+    
+        // (Phase 11) notification de refus ici
+    }
+
 }
