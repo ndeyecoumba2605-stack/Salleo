@@ -8,6 +8,7 @@ use App\Models\Salle;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Exceptions\AnnulationRefuseeException;
 
 class ReservationService
 {
@@ -57,5 +58,16 @@ class ReservationService
         return $reservation;
     }
 
+    public function annuler(Reservation $reservation): void
+    {
+        if (! $reservation->peutEtreAnnulee()) {
+            throw new AnnulationRefuseeException();
+        }
+    
+        // Le statut « annulee » ne bloque plus la salle : le créneau est libéré
+        $reservation->update(['statut' => Reservation::ANNULEE]);
+    
+        // (Phase 11) notification d'annulation ici
+    }
     // (Phases 9 et 10) annuler(), confirmer() et refuser() seront ajoutées ici
 }

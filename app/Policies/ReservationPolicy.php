@@ -63,4 +63,10 @@ class ReservationPolicy
     {
         return false;
     }
+
+    public function annuler(User $user, Reservation $reservation): bool
+    {
+        return $user->id === $reservation->user_id;
+    }
+
 }
