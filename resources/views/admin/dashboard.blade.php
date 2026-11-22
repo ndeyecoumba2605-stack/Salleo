@@ -1,69 +1,60 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tableau de bord administrateur</title>
-    <style>
-        :root { --bleu: #1f3864; --fond: #f4f6fa; --texte: #1b1f24; --bord: #d8dde6; }
-        * { box-sizing: border-box; }
-        body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--fond); color: var(--texte); }
-        header { background: var(--bleu); color: #fff; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-        header h1 { margin: 0; font-size: 20px; }
-        header .utilisateur { display: flex; align-items: center; gap: 12px; font-size: 14px; }
-        header button { background: #fff; color: var(--bleu); border: 0; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        main { max-width: 1000px; margin: 0 auto; padding: 24px; }
-        h2 { margin-top: 0; }
-        .grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-        .carte { background: #fff; border: 1px solid var(--bord); border-radius: 8px; padding: 18px; text-decoration: none; color: inherit; display: block; }
-        .carte h3 { margin: 0 0 6px; color: var(--bleu); font-size: 16px; }
-        .carte p { margin: 0; font-size: 14px; color: #555; }
-        a.carte:hover { border-color: var(--bleu); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
-        .carte.inactive { opacity: .55; }
-        .etiquette { display: inline-block; margin-top: 10px; font-size: 12px; background: #eef1f7; color: #555; padding: 2px 8px; border-radius: 10px; }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Espace administrateur</h1>
-        <div class="utilisateur">
-            <span>{{ auth()->user()->name }} ({{ auth()->user()->role }})</span>
-            @if (Route::has('logout'))
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit">Se déconnecter</button>
-                </form>
-            @endif
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800">Tableau de bord</h2>
+    </x-slot>
+ 
+    <div class="py-8 max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6">
+        <div class="grid gap-4 md:grid-cols-3">
+            <div class="bg-white p-5 rounded shadow">
+                <p class="text-sm text-gray-500">Salles actives</p>
+                <p class="text-3xl font-bold">{{ $salles->count() }}</p>
+            </div>
+            <div class="bg-white p-5 rounded shadow">
+                <p class="text-sm text-gray-500">Réservations à venir</p>
+                <p class="text-3xl font-bold">{{ $aVenir }}</p>
+            </div>
+            <a href="{{ route('admin.demandes') }}"
+               class="bg-white p-5 rounded shadow">
+                <p class="text-sm text-gray-500">Demandes en attente</p>
+                <p class="text-3xl font-bold text-teal-700">{{ $enAttente }}</p>
+            </a>
         </div>
-    </header>
-
-    <main>
-        <h2>Tableau de bord</h2>
-
-        @php
-            $modules = [
-                ['Salles', 'Gérer les salles, amphithéâtres et laboratoires.', 'admin.salles.index'],
-                ['Réservations', 'Consulter et valider les réservations.', 'admin.reservations.index'],
-                ['Utilisateurs', 'Gérer les comptes et les rôles.', 'admin.utilisateurs.index'],
-            ];
-        @endphp
-
-        <div class="grille">
-            @foreach ($modules as [$titre, $description, $nomRoute])
-                @if (Route::has($nomRoute))
-                    <a class="carte" href="{{ route($nomRoute) }}">
-                        <h3>{{ $titre }}</h3>
-                        <p>{{ $description }}</p>
-                    </a>
-                @else
-                    <div class="carte inactive">
-                        <h3>{{ $titre }}</h3>
-                        <p>{{ $description }}</p>
-                        <span class="etiquette">Bientôt disponible</span>
-                    </div>
-                @endif
+ 
+        <form method="GET" class="flex items-end gap-3">
+            <div>
+                <x-input-label for="date" value="Planning du" />
+                <x-text-input id="date" name="date" type="date"
+                              :value="$date" />
+            </div>
+            <x-primary-button>Afficher</x-primary-button>
+        </form>
+ 
+        <table class="w-full bg-white shadow rounded text-sm">
+            <thead class="bg-gray-100 text-left">
+                <tr><th class="p-3">Salle</th><th>Occupation du jour</th></tr>
+            </thead>
+            <tbody>
+            @foreach ($salles as $salle)
+                <tr class="border-t align-top">
+                    <td class="p-3">
+                        {{ $salle->nom_complet }}
+                        <span class="text-gray-500">({{ $salle->capacite }})</span>
+                    </td>
+                    <td class="p-3">
+                        @forelse ($salle->reservations as $r)
+                            <p>
+                                {{ substr($r->heure_debut, 0, 5) }} -
+                                {{ substr($r->heure_fin, 0, 5) }} :
+                                {{ $r->user->nom_classe }}
+                                ({{ $r->libelleStatut() }})
+                            </p>
+                        @empty
+                            <span class="text-green-700">Libre toute la journée</span>
+                        @endforelse
+                    </td>
+                </tr>
             @endforeach
-        </div>
-    </main>
-</body>
-</html>
+            </tbody>
+        </table>
+    </div>
+</x-app-layout>
