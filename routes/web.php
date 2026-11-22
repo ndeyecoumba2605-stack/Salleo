@@ -1,41 +1,34 @@
 <?php
- 
-    use App\Http\Controllers\Admin;
-    use App\Http\Controllers\ProfileController;
-    use App\Http\Controllers\Responsable;
-    use Illuminate\Support\Facades\Auth;
-    use Illuminate\Support\Facades\Route;
-    use App\Http\Controllers\Admin\DashboardController;
-    use App\Http\Controllers\Admin\SalleController;
-    
 
-    Route::view('/', 'welcome');
+use App\Http\Controllers\Admin;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Responsable;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
-    // Redirige vers l'espace correspondant au rôle après la connexion
-    Route::get('/dashboard', function () {
-       /** @var \App\Models\User $user */
-        $user = Auth::user();
+Route::view('/', 'welcome');
 
-        return $user->isAdmin()
-            ? redirect()->route('admin.dashboard')
-            : redirect()->route('responsable.recherche');
-    })->middleware('auth')->name('dashboard');
-    Route::middleware(['auth', 'role:administrateur'])->prefix('admin')->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
-    });
+// Redirige vers l'espace correspondant au rôle après la connexion
+Route::get('/dashboard', function () {
+    /** @var \App\Models\User $user */
+    $user = Auth::user();
 
-    Route::middleware('auth')->group(function () {
+    return $user->isAdmin()
+        ? redirect()->route('admin.dashboard')
+        : redirect()->route('responsable.recherche');
+})->middleware('auth')->name('dashboard');
+
+Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])
         ->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
-    });
-    
+});
 
-    // ----- Espace responsable de classe -----
-    Route::middleware(['auth', 'role:responsable'])
+// ----- Espace responsable de classe -----
+Route::middleware(['auth', 'role:responsable'])
     ->prefix('responsable')->name('responsable.')->group(function () {
         Route::get('/recherche', [Responsable\RechercheController::class, 'index'])
             ->name('recherche');
@@ -53,8 +46,8 @@
             ->name('historique');
     });
 
-    // ----- Espace administration -----
-    Route::middleware(['auth', 'role:admin'])
+// ----- Espace administration -----
+Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [Admin\DashboardController::class, 'index'])
             ->name('dashboard');
@@ -72,6 +65,5 @@
             [Admin\StatistiqueController::class, 'index'])
             ->name('statistiques');
     });
-    Route::resource('salles', SalleController::class)->except(['show']);
 
-    require __DIR__.'/auth.php';
+require __DIR__.'/auth.php';
