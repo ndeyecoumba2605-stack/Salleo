@@ -26,7 +26,7 @@ class Reservation extends Model
 
     protected function casts(): array
     {
-        return ['date' => 'date'];
+        return ['date' => 'date:Y-m-d'];
     }
 
     public function user(): BelongsTo
@@ -43,7 +43,7 @@ class Reservation extends Model
     public function scopeOccupant(Builder $query, string $date,
         string $debut, string $fin): Builder
     {
-        return $query->where('date', $date)
+        return $query->whereDate('date', $date)
             ->whereIn('statut', self::STATUTS_BLOQUANTS)
             ->where('heure_debut', '<', $fin)
             ->where('heure_fin', '>', $debut);
