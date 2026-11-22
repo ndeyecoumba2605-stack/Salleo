@@ -9,9 +9,22 @@ use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\AnnulationRefuseeException;
-
+use App\Notifications\ReservationNotification;
+use Throwable;
 class ReservationService
 {
+    private function notifier(Reservation $reservation, string $type): void
+    {
+        try {
+            $reservation->user->notify(
+                new ReservationNotification($reservation, $type)
+            );
+        } catch (Throwable $e) {
+            // Un e-mail qui échoue ne doit jamais annuler une réservation
+            report($e);
+        }
+    }
+
     public function reserver(User $user, array $data): Reservation
     {
         $debut = Carbon::parse($data['heure_debut'])->format('H:i:s');
@@ -53,7 +66,9 @@ class ReservationService
             ]);
         });
 
-        // (Phase 11) notification de confirmation ici
+        if ($reservation->statut === Reservation::CONFIRMEE) {
+            $this->notifier($reservation, 'confirmee');
+        }
 
         return $reservation;
     }
@@ -67,20 +82,25 @@ class ReservationService
         // Le statut « annulee » ne bloque plus la salle : le créneau est libéré
         $reservation->update(['statut' => Reservation::ANNULEE]);
     
-        // (Phase 11) notification d'annulation ici
+        $this->notifier($reservation, 'annulee');
     }
+
      public function confirmer(Reservation $reservation): void
     {
         $reservation->update(['statut' => Reservation::CONFIRMEE]);
     
         // (Phase 11) notification de confirmation ici
+        $this->notifier($reservation, 'confirmee');
     }
     
     public function refuser(Reservation $reservation): void
     {
         $reservation->update(['statut' => Reservation::REFUSEE]);
-    
+         
+        
         // (Phase 11) notification de refus ici
+        $this->notifier($reservation, 'refusee');
     }
 
+    
 }
