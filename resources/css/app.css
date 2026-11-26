@@ -1,3 +1,51 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* SALLEO — identité visuelle et composants de l'espace utilisateur */
+:root {
+    --salleo-navy: #142d4e;
+    --salleo-blue: #1769aa;
+    --salleo-cyan: #25a9c2;
+    --salleo-bg: #f4f7fb;
+    --salleo-text: #24364b;
+    --salleo-muted: #718096;
+    --salleo-border: #e4ebf3;
+}
+
+body { background: var(--salleo-bg); color: var(--salleo-text); }
+.salleo-page-heading { display:flex; align-items:center; justify-content:space-between; gap:1.5rem; }
+.salleo-page-heading h1 { margin:.2rem 0; color:var(--salleo-navy); font-size:1.65rem; font-weight:750; letter-spacing:-.035em; }
+.salleo-eyebrow { color:var(--salleo-cyan); font-size:.68rem; font-weight:800; letter-spacing:.15em; }
+.salleo-muted { color:var(--salleo-muted); }
+.salleo-outline-link { display:inline-flex; align-items:center; gap:.55rem; padding:.7rem 1rem; border:1px solid var(--salleo-border); border-radius:12px; color:var(--salleo-navy); background:#fff; font-size:.85rem; font-weight:700; transition:.2s; }
+.salleo-outline-link:hover { border-color:#9bcddd; background:#f7fcff; transform:translateY(-1px); }
+.salleo-content { max-width:1180px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+.salleo-welcome-card { position:relative; display:flex; align-items:center; justify-content:space-between; min-height:230px; overflow:hidden; padding:2.4rem 3rem; border-radius:22px; color:#fff; background:linear-gradient(115deg,#142d4e 0%,#1769aa 65%,#22a6bd 100%); box-shadow:0 16px 38px rgba(20,45,78,.14); }
+.salleo-welcome-copy { position:relative; z-index:1; max-width:570px; }
+.salleo-pill { display:inline-block; padding:.4rem .75rem; border:1px solid rgba(255,255,255,.25); border-radius:30px; background:rgba(255,255,255,.1); color:#dff8ff; font-size:.65rem; font-weight:800; letter-spacing:.12em; }
+.salleo-welcome-card h2 { margin:1rem 0 .65rem; font-size:2.25rem; line-height:1.12; font-weight:800; letter-spacing:-.04em; }
+.salleo-welcome-card p { max-width:490px; color:#e2effa; line-height:1.7; }
+.salleo-welcome-art { position:absolute; right:7%; top:50%; display:grid; place-items:center; width:210px; height:210px; border:1px solid rgba(255,255,255,.17); border-radius:50%; background:rgba(255,255,255,.08); transform:translateY(-50%); }
+.salleo-art-building { display:grid; place-items:center; width:120px; height:120px; border:1px solid rgba(255,255,255,.35); border-radius:28px; background:rgba(255,255,255,.13); color:#fff; font-size:5rem; }
+.salleo-art-dot { position:absolute; width:13px; height:13px; border-radius:50%; background:#7de2df; box-shadow:0 0 0 7px rgba(125,226,223,.13); }
+.dot-one { top:28px; right:35px; }.dot-two { bottom:32px; left:24px; background:#ffd27b; }
+.salleo-section-head { display:flex; align-items:end; justify-content:space-between; margin:2.3rem 0 1rem; }
+.salleo-section-head h2 { margin:.2rem 0; color:var(--salleo-navy); font-size:1.35rem; font-weight:800; letter-spacing:-.025em; }
+.salleo-search-card { padding:1.7rem; border:1px solid var(--salleo-border); border-radius:18px; background:#fff; box-shadow:0 8px 28px rgba(26,54,93,.045); }
+.salleo-form-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1.35rem 1.1rem; }
+.salleo-field label,.salleo-label { display:block; margin-bottom:.5rem; color:#43556b; font-size:.78rem; font-weight:750; }
+.salleo-input { min-height:46px; border:1px solid #dce5ef !important; border-radius:10px !important; background:#fbfdff !important; color:var(--salleo-text); font-size:.88rem; box-shadow:none !important; }
+.salleo-input:focus { border-color:#48b6c7 !important; outline:3px solid rgba(37,169,194,.12); }
+.salleo-equipment-field { grid-column:span 3; }
+.salleo-checkboxes { display:flex; flex-wrap:wrap; gap:.55rem; }
+.salleo-checkbox { display:inline-flex; align-items:center; gap:.45rem; padding:.5rem .7rem; border:1px solid var(--salleo-border); border-radius:9px; background:#fbfdff; color:#52647a; font-size:.78rem; }
+.salleo-checkbox input { accent-color:var(--salleo-blue); }
+.salleo-form-footer { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-top:1.6rem; padding-top:1.25rem; border-top:1px solid #edf1f6; }
+.salleo-primary-button { display:inline-flex; align-items:center; justify-content:center; gap:.6rem; padding:.8rem 1.2rem; border:0; border-radius:10px; background:linear-gradient(110deg,var(--salleo-blue),var(--salleo-cyan)); color:#fff; font-size:.85rem; font-weight:750; box-shadow:0 7px 16px rgba(23,105,170,.2); transition:.2s; }
+.salleo-primary-button:hover { filter:brightness(1.05); transform:translateY(-1px); }
+.salleo-results-section { margin-top:2.2rem; }
+.salleo-results-section .bg-white,.salleo-results-section [class*="rounded shadow"] { border:1px solid var(--salleo-border); border-radius:14px; box-shadow:0 8px 24px rgba(26,54,93,.05); }
+nav.bg-white { border-bottom:1px solid var(--salleo-border) !important; box-shadow:0 3px 15px rgba(20,45,78,.035); }
+@media (max-width:800px) { .salleo-form-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }.salleo-equipment-field { grid-column:span 2; }.salleo-welcome-art { right:-45px; opacity:.55; } }
+@media (max-width:560px) { .salleo-content { padding:1.25rem 1rem 3rem; }.salleo-page-heading { align-items:flex-start; flex-direction:column; }.salleo-welcome-card { min-height:220px; padding:1.5rem; }.salleo-welcome-card h2 { font-size:1.8rem; }.salleo-welcome-art { right:-95px; }.salleo-form-grid { grid-template-columns:1fr; }.salleo-equipment-field { grid-column:span 1; }.salleo-form-footer { align-items:stretch; flex-direction:column; }.salleo-primary-button { width:100%; } }

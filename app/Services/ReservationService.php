@@ -89,7 +89,7 @@ class ReservationService
     {
         $reservation->update(['statut' => Reservation::CONFIRMEE]);
     
-        // (Phase 11) notification de confirmation ici
+        
         $this->notifier($reservation, 'confirmee');
     }
     
@@ -98,7 +98,7 @@ class ReservationService
         $reservation->update(['statut' => Reservation::REFUSEE]);
          
         
-        // (Phase 11) notification de refus ici
+        
         $this->notifier($reservation, 'refusee');
     }
 
